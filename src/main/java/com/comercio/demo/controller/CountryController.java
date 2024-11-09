@@ -1,14 +1,12 @@
 package com.comercio.demo.controller;
 
-import com.comercio.demo.dto.request.CreateCategoryDto;
 import com.comercio.demo.dto.request.CreateCountryDto;
-import com.comercio.demo.dto.response.ResponseCategoryDto;
 import com.comercio.demo.dto.response.ResponseCountryDto;
-import com.comercio.demo.service.CategoryService;
-import com.comercio.demo.service.CountryService;
-import com.comercio.demo.service.impl.CategoryServiceImpl;
-import com.comercio.demo.service.impl.CountryServiceImpl;
+import com.comercio.demo.entity.Country;
+import com.comercio.demo.service.ICountryService;
+import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,44 +14,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class CountryController implements BaseController<CreateCountryDto, ResponseCountryDto>{
-    private final CountryService countryService;
-
-    public CountryController(CountryServiceImpl categoryServiceImpl) {
-        this.countryService = categoryServiceImpl;
-    }
-
+public class CountryController {
+    private final ICountryService countryService;
+    private final MapperUtil mapperUtil;
 
     @GetMapping("/countries")
-    @Override
     public ResponseEntity<List<ResponseCountryDto>> getAll() {
-        return new ResponseEntity<>(countryService.findAll(),HttpStatus.OK);
+        List<ResponseCountryDto> countryDtos = mapperUtil.mapList(countryService.findAll(), ResponseCountryDto.class);
+        return new ResponseEntity<>(countryDtos,HttpStatus.OK);
     }
 
     @PostMapping("/countries")
-    @Override
     public ResponseEntity<ResponseCountryDto> create(@Valid @RequestBody CreateCountryDto createCountryDto) {
-        return new ResponseEntity<>(countryService.create(createCountryDto),HttpStatus.CREATED);
+        Country country = countryService.create(mapperUtil.map(createCountryDto, Country.class));
+
+        return new ResponseEntity<>(mapperUtil.map(country,ResponseCountryDto.class),HttpStatus.CREATED);
     }
 
-    @PutMapping("/countries/{id}")
-    @Override
+
+    @PutMapping("countries/{id}")
     public ResponseEntity<ResponseCountryDto> update(@PathVariable Long id, @Valid @RequestBody CreateCountryDto createCountryDto) {
-
-        return new ResponseEntity<>(countryService.update(id,createCountryDto),HttpStatus.ACCEPTED);
+        createCountryDto.setIdCountry(id);
+        Country country =  countryService.update(id,mapperUtil.map(createCountryDto, Country.class));
+        return new ResponseEntity<>(mapperUtil.map(country,ResponseCountryDto.class),HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/countries/{id}")
-    @Override
+    @DeleteMapping("countries/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         countryService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/countries/{id}")
-    @Override
+    @GetMapping("countries/{id}")
     public ResponseEntity<ResponseCountryDto> getById(@PathVariable Long id) {
-        return new ResponseEntity<>(countryService.getById(id),HttpStatus.OK);
+        return new ResponseEntity<>(mapperUtil.map(countryService.getById(id),ResponseCountryDto.class),HttpStatus.OK);
     }
 }

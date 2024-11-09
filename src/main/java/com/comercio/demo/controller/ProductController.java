@@ -2,9 +2,13 @@ package com.comercio.demo.controller;
 
 import com.comercio.demo.dto.request.CreateProductDto;
 import com.comercio.demo.dto.response.ResponseProductDto;
-import com.comercio.demo.service.ProductService;
-import com.comercio.demo.service.impl.ProductServiceImpl;
+import com.comercio.demo.entity.Category;
+import com.comercio.demo.entity.Product;
+import com.comercio.demo.service.ICategoryService;
+import com.comercio.demo.service.IProductService;
+import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,42 +16,48 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/products")
-public class ProductController implements BaseController<CreateProductDto, ResponseProductDto>{
-    private ProductService productService;
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class ProductController {
+    private final IProductService productService;
+    private final ICategoryService categoryService;
+    private final MapperUtil mapperUtil;
 
-    public ProductController(ProductServiceImpl productService) {
-        this.productService = productService;
-    }
-
-    @Override
-    @GetMapping
+    @GetMapping("/products")
     public ResponseEntity<List<ResponseProductDto>> getAll() {
-        return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+        List<ResponseProductDto> productDtos = mapperUtil.mapList(productService.findAll(), ResponseProductDto.class);
+        return new ResponseEntity<>(productDtos,HttpStatus.OK);
     }
 
-    @Override
-    @PostMapping
-    public ResponseEntity<ResponseProductDto> create(@RequestBody @Valid CreateProductDto createProductDto) {
-        return new ResponseEntity<>(productService.create(createProductDto),HttpStatus.CREATED);
+    @PostMapping("/products")
+    public ResponseEntity<ResponseProductDto> create(@Valid @RequestBody CreateProductDto createProductDto) {
+        Category category = categoryService.getById(createProductDto.getIdCategory());
+        Product product = productService.create(mapperUtil.map(createProductDto, Product.class));
+
+
+        product.setCategory(category);
+
+        return new ResponseEntity<>(mapperUtil.map(product,ResponseProductDto.class),HttpStatus.CREATED);
     }
 
-    @Override
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseProductDto> update(@PathVariable Long id, @RequestBody @Valid CreateProductDto createProductDto) {
-        return new ResponseEntity<>(productService.update(id,createProductDto),HttpStatus.OK);
+
+    @PutMapping("products/{id}")
+    public ResponseEntity<ResponseProductDto> update(@PathVariable Long id, @Valid @RequestBody CreateProductDto createProductDto) {
+        Category category = categoryService.getById(createProductDto.getIdCategory());
+        createProductDto.setIdProduct(id);
+        Product product =  productService.update(id,mapperUtil.map(createProductDto, Product.class));
+        product.setCategory(category);
+        return new ResponseEntity<>(mapperUtil.map(product,ResponseProductDto.class),HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/{id}")
-    @Override
+    @DeleteMapping("products/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{id}")
-    @Override
+    @GetMapping("products/{id}")
     public ResponseEntity<ResponseProductDto> getById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.getById(id),HttpStatus.OK);
+        return new ResponseEntity<>(mapperUtil.map(productService.getById(id),ResponseProductDto.class),HttpStatus.OK);
     }
 }

@@ -1,23 +1,19 @@
 package com.comercio.demo.dto.request;
 
-import com.comercio.demo.dto.response.ResponseCustomerDto;
-import com.comercio.demo.entity.Customer;
-import com.comercio.demo.entity.Product;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreateReviewDto {
+
+    private Long idReview;
 
     @Min(value = 0,message = "El valor mínimo debe ser 0")
     @Max(value = 10,message = "El máximo valor es 10")
-    @Digits(integer = 2,fraction = 0,message = "Debe ser número")
     private Integer rating;
 
     @NotBlank(message = "El comentario debe tener contenido")
@@ -26,11 +22,9 @@ public class CreateReviewDto {
 
     @NotNull(message = "El id del usuario debe tener contenido")
     @Positive(message = "El id del costumer debe ser positivo")
-    @Digits(integer = 5,fraction = 0,message = "Debe ser número")
     private Long idCustomer;
 
     @NotNull(message = "El id del producto debe tener contenido")
     @Positive(message = "El id del producto debe ser positivo")
-    @Digits(integer = 5,fraction = 0,message = "Debe ser número")
     private Long idProduct;
 }

@@ -1,21 +1,15 @@
 package com.comercio.demo.dto.response;
 
-
-
 import com.comercio.demo.enums.CountryCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.io.Serializable;
-import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseCountryDto implements Serializable {
     private Long id;
     private String name;

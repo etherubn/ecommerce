@@ -1,27 +1,25 @@
 package com.comercio.demo.dto.response;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseReviewDto implements Serializable {
     private Long id;
     private LocalDateTime creationDate;
     private Integer rating;
     private String comment;
     @JsonProperty("customer")
-    private ResponseCustomerDto customer;
+    private ResponseCustomerDto customerReview;
     @JsonProperty("product")
-    private ResponseProductDto product;
+    private ResponseProductDto productReview;
 
 }

@@ -3,24 +3,21 @@ package com.comercio.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
-    private Long id;
+    @Column(name = "id_review")
+    @EqualsAndHashCode.Include
+    private Long idReview;
 
     @NotNull
     @Column(updatable = false)
@@ -34,35 +31,16 @@ public class Review {
     @Size(max = 50)
     private String comment;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.EAGER)
     @JoinColumn(name = "id_customer")
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_product")
     private Product product;
-
-    public Review(Integer rating, String comment, Customer customer, Product product) {
-        this.rating = rating;
-        this.comment = comment;
-        this.customer = customer;
-        this.product = product;
-    }
 
     @PrePersist
     public void setCreationTime(){
         this.creationDate= LocalDateTime.now();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Review review)) return false;
-        return Objects.equals(customer, review.customer) && Objects.equals(product, review.product);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(customer, product);
     }
 }

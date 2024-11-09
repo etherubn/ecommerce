@@ -2,28 +2,25 @@ package com.comercio.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "ordered")
 public class Ordered {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ordered_id")
-    private Long id;
+    @Column(name = "id_ordered")
+    @EqualsAndHashCode.Include
+    private Long idOrdered;
 
     @NotNull
     @Column(updatable = false,nullable = false)
@@ -41,34 +38,17 @@ public class Ordered {
     private boolean isCanceled = false;
     private boolean isDeleted = false;
 
+    @OneToMany(mappedBy = "ordered",cascade = CascadeType.MERGE)
+    private List<OrderedProduct> orderedProducts = new ArrayList<>();
+
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "id_customer")
     private Customer customer;
-
-    @OneToMany(mappedBy = "ordered",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<OrderProduct> orderProducts = new ArrayList<>();
-
-    public Ordered(Customer customer, List<OrderProduct> orderProducts) {
-        this.customer = customer;
-        this.orderProducts = orderProducts;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ordered ordered)) return false;
-        return Objects.equals(orderDate, ordered.orderDate) && Objects.equals(customer, ordered.customer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderDate, customer);
-    }
 
     @Override
     public String toString() {
         return "Ordered{" +
-                "id=" + id +
+                "id=" + idOrdered +
                 ", orderDate=" + orderDate +
                 ", total=" + total;
     }

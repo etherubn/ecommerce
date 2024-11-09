@@ -10,7 +10,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +18,10 @@ import java.util.Map;
 public class HandlerException {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String,Object>> countryNotFoundException(NotFoundException e){
+    public ResponseEntity<Map<String,Object>> notFoundException(NotFoundException e){
         Map<String,Object> error = new HashMap<>();
         error.put("error",e.getEntity()+" not found");
         error.put("time", LocalDateTime.now());
-        error.put("id",e.getEntityId());
         error.put("message",e.getMessage());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -69,9 +67,6 @@ public class HandlerException {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-
-    //TODO
-    //Esto es un handler para cuando se agregan valores a los campos que son únicos
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<Map<String,Object>> duplicateKeyException(DuplicateKeyException e){
         Map<String,Object> error = new HashMap<>();

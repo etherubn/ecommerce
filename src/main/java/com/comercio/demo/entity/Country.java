@@ -4,27 +4,24 @@ import com.comercio.demo.enums.CountryCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "country")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "country_id")
-    private Long id;
+    @Column(name = "id_country")
+    @EqualsAndHashCode.Include
+    private Long idCountry;
 
     @NotBlank
-    @NotNull
     private String name;
 
     @NotNull
@@ -32,33 +29,12 @@ public class Country {
     private CountryCode countryCode;
 
 
-    @OneToMany(mappedBy = "country",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Customer> customers = new HashSet<>();
-
-    public Country(String name, CountryCode countryCode) {
-        this.name = name;
-        this.countryCode = countryCode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Country country)) return false;
-        return countryCode == country.countryCode;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(countryCode);
-    }
-
     @Override
     public String toString() {
         return "Country{" +
-                "id=" + id +
+                "id=" + idCountry +
                 ", name='" + name + '\'' +
                 ", countryCode=" + countryCode +
-                ", customers=" + customers +
                 '}';
     }
 }

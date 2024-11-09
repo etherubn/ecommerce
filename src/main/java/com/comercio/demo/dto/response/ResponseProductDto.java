@@ -2,21 +2,19 @@ package com.comercio.demo.dto.response;
 
 
 import com.comercio.demo.entity.Review;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 
-@Getter
-@Setter
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseProductDto implements Serializable {
     private Long id;
     private String name;
@@ -24,6 +22,6 @@ public class ResponseProductDto implements Serializable {
     private BigDecimal price;
     private String description;
     @JsonProperty("category")
-    private ResponseCategoryDto responseCategoryDto;
+    private ResponseCategoryDto categoryProduct;
 
 }

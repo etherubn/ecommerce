@@ -5,23 +5,20 @@ import com.comercio.demo.entity.idClass.OrderProductKey;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "order_product")
-public class OrderProduct {
+public class OrderedProduct {
 
     @EmbeddedId
-    private OrderProductKey orderProductKey;
+    @EqualsAndHashCode.Include
+    private OrderProductKey idOrderedProduct;
 
     @NotNull
     @Positive
@@ -32,25 +29,25 @@ public class OrderProduct {
     @Positive
     private BigDecimal subtotal;
 
-    public OrderProduct() {
-        this.orderProductKey = new OrderProductKey();
+    public OrderedProduct() {
+        this.idOrderedProduct = new OrderProductKey();
     }
 
-    public OrderProduct(Integer quantity, Ordered ordered, Product product) {
+    public OrderedProduct(Integer quantity, Ordered ordered, Product product) {
         this.quantity = quantity;
         this.ordered = ordered;
         this.product = product;
-        this.orderProductKey =new OrderProductKey(ordered.getId(), product.getId());
+        this.idOrderedProduct =new OrderProductKey(ordered.getIdOrdered(), product.getIdProduct());
     }
 
     public void setOrdered(Ordered ordered) {
         this.ordered = ordered;
-        this.orderProductKey.setOrderId(ordered.getId());
+        this.idOrderedProduct.setOrderId(ordered.getIdOrdered());
     }
 
     public void setProduct(Product product) {
         this.product = product;
-        this.orderProductKey.setProductId(product.getId());
+        this.idOrderedProduct.setProductId(product.getIdProduct());
     }
 
     @ManyToOne
@@ -65,8 +62,8 @@ public class OrderProduct {
 
     @Override
     public String toString() {
-        return "OrderProduct{" +
-                "orderProductKey=" + orderProductKey +
+        return "OrderedProduct{" +
+                "orderProductKey=" + idOrderedProduct +
                 ", quantity=" + quantity +
                 ", ordered=" + ordered +
                 ", product=" + product +

@@ -2,55 +2,59 @@ package com.comercio.demo.controller;
 
 import com.comercio.demo.dto.request.CreateCustomerDto;
 import com.comercio.demo.dto.response.ResponseCustomerDto;
-
-import com.comercio.demo.service.CustomerService;
-import com.comercio.demo.service.impl.CustomerServiceImpl;
+import com.comercio.demo.entity.Country;
+import com.comercio.demo.entity.Customer;
+import com.comercio.demo.service.ICountryService;
+import com.comercio.demo.service.ICustomerService;
+import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
+
+//falta arreglar el actualizar
 @RestController
-@RequestMapping("/api/v1/customers")
-public class CustomerController implements BaseController<CreateCustomerDto, ResponseCustomerDto>{
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class CustomerController {
+    private final ICustomerService customerService;
+    private final ICountryService countryService;
+    private final MapperUtil mapperUtil;
 
-    private final CustomerService customerService;
-
-
-    public CustomerController(CustomerServiceImpl customerService) {
-        this.customerService = customerService;
-
-    }
-
-    @GetMapping
-    @Override
+    @GetMapping("/customers")
     public ResponseEntity<List<ResponseCustomerDto>> getAll() {
-        return new ResponseEntity<>(customerService.findAll(), HttpStatus.OK);
+        List<ResponseCustomerDto> customerDtos = mapperUtil.mapList(customerService.findAll(), ResponseCustomerDto.class);
+        return new ResponseEntity<>(customerDtos,HttpStatus.OK);
     }
 
-    @Override
-    @PostMapping
+    @PostMapping("/customers")
     public ResponseEntity<ResponseCustomerDto> create(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
-        return new ResponseEntity<>(customerService.create(createCustomerDto),HttpStatus.CREATED);
+        Country country =countryService.getById(createCustomerDto.getIdCountry());
+        Customer customer = customerService.create(mapperUtil.map(createCustomerDto, Customer.class));
+        customer.setCountry(country);
+        return new ResponseEntity<>(mapperUtil.map(customer,ResponseCustomerDto.class),HttpStatus.CREATED);
     }
 
-    @Override
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseCustomerDto> update(@PathVariable Long id, @Valid @RequestBody  CreateCustomerDto createCustomerDto) {
-        return new ResponseEntity<>(customerService.update(id,createCustomerDto),HttpStatus.OK);
+
+    @PutMapping("customers/{id}")
+    public ResponseEntity<ResponseCustomerDto> update(@PathVariable Long id, @Valid @RequestBody CreateCustomerDto createCustomerDto) {
+        createCustomerDto.setIdCustomer(id);
+        Customer customer =  customerService.update(id,mapperUtil.map(createCustomerDto, Customer.class));
+        return new ResponseEntity<>(mapperUtil.map(customer,ResponseCustomerDto.class),HttpStatus.ACCEPTED);
     }
 
-    @Override
-    @DeleteMapping("/{id}")
+    @DeleteMapping("customers/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         customerService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Override
-    @GetMapping("/{id}")
+    @GetMapping("customers/{id}")
     public ResponseEntity<ResponseCustomerDto> getById(@PathVariable Long id) {
-        return new ResponseEntity<>(customerService.getById(id),HttpStatus.OK);
+        return new ResponseEntity<>(mapperUtil.map(customerService.getById(id),ResponseCustomerDto.class),HttpStatus.OK);
     }
 }

@@ -2,9 +2,13 @@ package com.comercio.demo.controller;
 
 import com.comercio.demo.dto.request.CreateReviewDto;
 import com.comercio.demo.dto.response.ResponseReviewDto;
-import com.comercio.demo.service.ReviewService;
-import com.comercio.demo.service.impl.ReviewServiceImpl;
+import com.comercio.demo.entity.Review;
+import com.comercio.demo.service.ICustomerService;
+import com.comercio.demo.service.IProductService;
+import com.comercio.demo.service.IReviewService;
+import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,40 +16,47 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/reviews")
-public class ReviewController implements BaseController<CreateReviewDto, ResponseReviewDto>{
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class ReviewController {
+    private final IReviewService reviewService;
+    private final MapperUtil mapperUtil;
+    private final IProductService productService;
+    private final ICustomerService customerService;
 
-    private final ReviewService reviewService;
-
-    public ReviewController(ReviewServiceImpl reviewService) {
-        this.reviewService = reviewService;
-    }
-
-    @GetMapping
-    @Override
+    @GetMapping("/reviews")
     public ResponseEntity<List<ResponseReviewDto>> getAll() {
-        return new ResponseEntity<>(reviewService.findAll(), HttpStatus.OK);
+        List<ResponseReviewDto> reviewDtos = mapperUtil.mapList(reviewService.findAll(), ResponseReviewDto.class);
+        return new ResponseEntity<>(reviewDtos,HttpStatus.OK);
     }
 
-    @PostMapping
-    @Override
+    @PostMapping("/reviews")
     public ResponseEntity<ResponseReviewDto> create(@Valid @RequestBody CreateReviewDto createReviewDto) {
-        return new ResponseEntity<>(reviewService.create(createReviewDto),HttpStatus.CREATED);
+        customerService.getById(createReviewDto.getIdCustomer());
+        customerService.getById(createReviewDto.getIdProduct());
+
+        Review review = reviewService.create(mapperUtil.map(createReviewDto, Review.class));
+        System.out.println(review);
+
+        return new ResponseEntity<>(mapperUtil.map(review,ResponseReviewDto.class),HttpStatus.CREATED);
     }
 
-    @Override
-    public ResponseEntity<ResponseReviewDto> update(Long id, CreateReviewDto createReviewDto) {
-        return null;
+
+    @PutMapping("reviews/{id}")
+    public ResponseEntity<ResponseReviewDto> update(@PathVariable Long id, @Valid @RequestBody CreateReviewDto createReviewDto) {
+        createReviewDto.setIdReview(id);
+        Review review =  reviewService.update(id,mapperUtil.map(createReviewDto, Review.class));
+        return new ResponseEntity<>(mapperUtil.map(review,ResponseReviewDto.class),HttpStatus.ACCEPTED);
     }
 
-    @Override
-    public ResponseEntity<Void> delete(Long id) {
+    @DeleteMapping("reviews/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         reviewService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Override
-    public ResponseEntity<ResponseReviewDto> getById(Long id) {
-        return null;
+    @GetMapping("reviews/{id}")
+    public ResponseEntity<ResponseReviewDto> getById(@PathVariable Long id) {
+        return new ResponseEntity<>(mapperUtil.map(reviewService.getById(id),ResponseReviewDto.class),HttpStatus.OK);
     }
 }

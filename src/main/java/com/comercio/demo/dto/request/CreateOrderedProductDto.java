@@ -1,21 +1,19 @@
 package com.comercio.demo.dto.request;
 
-import com.comercio.demo.entity.Ordered;
-import com.comercio.demo.entity.Product;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderProductDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CreateOrderedProductDto {
+
+    private Long idOrderedProduct;
 
     @Digits(integer = 5,fraction = 0,message = "Debe ser número")
     @NotNull(message = "Debe tener una cantidad")

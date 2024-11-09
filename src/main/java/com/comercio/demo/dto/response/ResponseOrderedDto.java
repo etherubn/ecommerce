@@ -1,26 +1,20 @@
 package com.comercio.demo.dto.response;
 
 
-import com.comercio.demo.entity.Customer;
-import com.comercio.demo.entity.OrderProduct;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class ResponseOrderDto implements Serializable {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ResponseOrderedDto implements Serializable {
     private Long id;
     private LocalDateTime orderedDate;
     private String username;
