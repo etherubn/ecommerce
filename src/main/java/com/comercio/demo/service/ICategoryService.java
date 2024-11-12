@@ -6,6 +6,6 @@ import com.comercio.demo.entity.Category;
 
 import java.util.List;
 
-public interface ICategoryService extends ICrudService<Category,Long> {
+public interface ICategoryService extends ICrudService<Category,Long,CreateCategoryDto> {
 
 }

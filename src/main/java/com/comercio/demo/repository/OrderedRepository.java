@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderedRepository extends RepoGeneric<Ordered,Long> {
-//    List<Ordered> findAllByCustomerId(Long id);
 }

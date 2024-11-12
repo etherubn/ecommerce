@@ -7,6 +7,6 @@ import com.comercio.demo.entity.Review;
 
 import java.util.List;
 
-public interface IReviewService extends ICrudService<Review,Long> {
+public interface IReviewService extends ICrudService<Review,Long,CreateReviewDto> {
 
 }

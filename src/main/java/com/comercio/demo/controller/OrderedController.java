@@ -2,7 +2,6 @@ package com.comercio.demo.controller;
 
 import com.comercio.demo.dto.request.CreateOrderedDto;
 import com.comercio.demo.dto.response.ResponseOrderedDto;
-import com.comercio.demo.entity.Ordered;
 import com.comercio.demo.service.IOrderedService;
 import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
@@ -15,39 +14,36 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/ordereds")
 public class OrderedController {
     private final IOrderedService orderedService;
     private final MapperUtil mapperUtil;
 
-    @GetMapping("/ordereds")
+    @GetMapping
     public ResponseEntity<List<ResponseOrderedDto>> getAll() {
         List<ResponseOrderedDto> orderedDtos = mapperUtil.mapList(orderedService.findAll(), ResponseOrderedDto.class);
         return new ResponseEntity<>(orderedDtos,HttpStatus.OK);
     }
 
-    @PostMapping("/ordereds")
+    @PostMapping
     public ResponseEntity<ResponseOrderedDto> create(@Valid @RequestBody CreateOrderedDto createOrderedDto) {
-        Ordered ordered = orderedService.create(mapperUtil.map(createOrderedDto, Ordered.class));
-
-        return new ResponseEntity<>(mapperUtil.map(ordered,ResponseOrderedDto.class),HttpStatus.CREATED);
+        CreateOrderedDto orderedDto = orderedService.create(createOrderedDto);
+        return new ResponseEntity<>(mapperUtil.map(orderedDto,ResponseOrderedDto.class),HttpStatus.CREATED);
     }
 
-
-    @PutMapping("ordereds/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponseOrderedDto> update(@PathVariable Long id, @Valid @RequestBody CreateOrderedDto createOrderedDto) {
-        createOrderedDto.setIdOrdered(id);
-        Ordered ordered =  orderedService.update(id,mapperUtil.map(createOrderedDto, Ordered.class));
-        return new ResponseEntity<>(mapperUtil.map(ordered,ResponseOrderedDto.class),HttpStatus.ACCEPTED);
+        CreateOrderedDto orderedDto =  orderedService.update(id,createOrderedDto);
+        return new ResponseEntity<>(mapperUtil.map(orderedDto,ResponseOrderedDto.class),HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("ordereds/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         orderedService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("ordereds/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseOrderedDto> getById(@PathVariable Long id) {
         return new ResponseEntity<>(mapperUtil.map(orderedService.getById(id),ResponseOrderedDto.class),HttpStatus.OK);
     }

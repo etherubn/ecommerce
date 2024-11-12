@@ -4,6 +4,7 @@ import com.comercio.demo.enums.CategoryType;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
@@ -21,6 +22,8 @@ public class Category {
     private Long idCategory;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(nullable = false)
     private CategoryType tipo;
 
     public Category(CategoryType tipo) {

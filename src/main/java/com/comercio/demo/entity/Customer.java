@@ -23,37 +23,34 @@ public class Customer {
 
     @NotBlank
     @Size(max = 30)
+    @Column(nullable = false)
     private String name;
 
     @NotBlank
     @Size(max = 30)
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String dni;
 
     @ValidEmail
-
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String email;
 
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String username;
 
     @NotBlank
     @Size(max = 80)
+    @Column(unique = true,nullable = false)
     private String password;
 
-
-    //Todo
-    //Debe colocarse de forma automatica al momento de
-    //registrarse el usuario
-
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false,nullable = false,name = "creation_date")
     private LocalDateTime creationDate;
 
     @PrePersist
@@ -66,6 +63,7 @@ public class Customer {
     //luego de realizar la compra aumentar
     @PositiveOrZero
     @NotNull
+    @Column(name = "purchase_amount")
     private Integer purchaseAmount=0;
 
     private boolean isEnabled;
@@ -74,7 +72,7 @@ public class Customer {
     private boolean credentialNoExpired;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_country")
+    @JoinColumn(name = "id_country",nullable = false)
     private Country country;
 
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})

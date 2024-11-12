@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +24,6 @@ public class CreateOrderedDto {
 
     @JsonProperty("products")
     @NotNull
-    private Set<CreateOrderedProductDto> orderedProducts;
+    private List<CreateOrderedProductDto> orderedProductsOrdered;
 
 }

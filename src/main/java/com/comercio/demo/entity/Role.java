@@ -20,6 +20,7 @@ public class Role {
     private Long idRole;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoleEnum role;
 
     @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.MERGE})

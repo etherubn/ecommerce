@@ -24,21 +24,25 @@ public class Product {
     private Long idProduct;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @PositiveOrZero
     @NotNull
+    @Column(nullable = false)
     private Integer stock;
 
     @NotNull
     @PositiveOrZero
+    @Column(nullable = false)
     private BigDecimal price;
 
     @NotBlank
     @Size(max = 40)
+    @Column(nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
     @JoinColumn(name = "category_id",nullable = false)
     private Category category;
 

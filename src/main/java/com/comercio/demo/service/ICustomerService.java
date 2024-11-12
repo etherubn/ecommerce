@@ -7,6 +7,6 @@ import com.comercio.demo.entity.Customer;
 
 import java.util.List;
 
-public interface ICustomerService extends ICrudService<Customer,Long> {
+public interface ICustomerService extends ICrudService<Customer,Long,CreateCustomerDto> {
 
 }

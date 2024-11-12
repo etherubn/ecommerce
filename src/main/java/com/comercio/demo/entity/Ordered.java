@@ -16,6 +16,7 @@ import java.util.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "ordered")
 public class Ordered {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ordered")
@@ -23,7 +24,7 @@ public class Ordered {
     private Long idOrdered;
 
     @NotNull
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false,nullable = false,name = "order_date")
     private LocalDateTime orderDate;
 
     @PrePersist
@@ -31,18 +32,18 @@ public class Ordered {
         orderDate= LocalDateTime.now();
     }
 
-    @NotNull
+
     @PositiveOrZero
-    private BigDecimal total;
+    private BigDecimal total= BigDecimal.ZERO;
 
     private boolean isCanceled = false;
     private boolean isDeleted = false;
 
-    @OneToMany(mappedBy = "ordered",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "ordered",cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "id_customer")
+    @JoinColumn(name = "id_customer",nullable = false)
     private Customer customer;
 
     @Override

@@ -2,7 +2,6 @@ package com.comercio.demo.controller;
 
 import com.comercio.demo.dto.request.CreatePermissionDto;
 import com.comercio.demo.dto.response.ResponsePermissionDto;
-import com.comercio.demo.entity.Permission;
 import com.comercio.demo.service.IPermissionService;
 import com.comercio.demo.util.MapperUtil;
 import jakarta.validation.Valid;
@@ -15,39 +14,36 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/permissions")
 public class PermissionController {
     private final IPermissionService permissionService;
     private final MapperUtil mapperUtil;
 
-    @GetMapping("/permissions")
+    @GetMapping
     public ResponseEntity<List<ResponsePermissionDto>> getAll() {
         List<ResponsePermissionDto> permissionDtos = mapperUtil.mapList(permissionService.findAll(), ResponsePermissionDto.class);
         return new ResponseEntity<>(permissionDtos,HttpStatus.OK);
     }
 
-    @PostMapping("/permissions")
+    @PostMapping
     public ResponseEntity<ResponsePermissionDto> create(@Valid @RequestBody CreatePermissionDto createPermissionDto) {
-        Permission permission = permissionService.create(mapperUtil.map(createPermissionDto, Permission.class));
-
-        return new ResponseEntity<>(mapperUtil.map(permission,ResponsePermissionDto.class),HttpStatus.CREATED);
+        CreatePermissionDto permissionDto = permissionService.create(createPermissionDto);
+        return new ResponseEntity<>(mapperUtil.map(permissionDto,ResponsePermissionDto.class),HttpStatus.CREATED);
     }
 
-
-    @PutMapping("permissions/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponsePermissionDto> update(@PathVariable Long id, @Valid @RequestBody CreatePermissionDto createPermissionDto) {
-        createPermissionDto.setIdPermission(id);
-        Permission permission =  permissionService.update(id,mapperUtil.map(createPermissionDto, Permission.class));
-        return new ResponseEntity<>(mapperUtil.map(permission,ResponsePermissionDto.class),HttpStatus.ACCEPTED);
+        CreatePermissionDto permissionDto =  permissionService.update(id,createPermissionDto);
+        return new ResponseEntity<>(mapperUtil.map(permissionDto,ResponsePermissionDto.class),HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("permissions/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         permissionService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("permissions/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponsePermissionDto> getById(@PathVariable Long id) {
         return new ResponseEntity<>(mapperUtil.map(permissionService.getById(id),ResponsePermissionDto.class),HttpStatus.OK);
     }

@@ -20,13 +20,13 @@ public class OrderedProduct {
     @EqualsAndHashCode.Include
     private OrderProductKey idOrderedProduct;
 
-    @NotNull
+
     @Positive
+    @Column(nullable = false)
     private Integer quantity;
 
-
-    @NotNull
     @Positive
+    @Column(nullable = false)
     private BigDecimal subtotal;
 
     public OrderedProduct() {
@@ -51,12 +51,12 @@ public class OrderedProduct {
     }
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id",nullable = false)
     @MapsId(value = "orderId")
     private Ordered ordered;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id",nullable = false)
     @MapsId(value = "productId")
     private Product product;
 

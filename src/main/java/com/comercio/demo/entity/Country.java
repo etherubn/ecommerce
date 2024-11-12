@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,10 +20,12 @@ public class Country {
     private Long idCountry;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CountryCode countryCode;
 
 

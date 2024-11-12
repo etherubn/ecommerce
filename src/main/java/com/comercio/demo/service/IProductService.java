@@ -7,6 +7,6 @@ import com.comercio.demo.entity.Product;
 
 import java.util.List;
 
-public interface IProductService extends ICrudService<Product,Long>{
+public interface IProductService extends ICrudService<Product,Long,CreateProductDto>{
 
 }

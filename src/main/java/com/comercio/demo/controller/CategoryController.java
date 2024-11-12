@@ -28,17 +28,14 @@ public class CategoryController{
 
     @PostMapping("/categories")
     public ResponseEntity<ResponseCategoryDto> create(@Valid @RequestBody CreateCategoryDto createCategoryDto) {
-        Category category = categoryService.create(mapperUtil.map(createCategoryDto, Category.class));
-
-        return new ResponseEntity<>(mapperUtil.map(category,ResponseCategoryDto.class),HttpStatus.CREATED);
+        CreateCategoryDto categoryDto = categoryService.create(createCategoryDto);
+        return new ResponseEntity<>(mapperUtil.map(categoryDto,ResponseCategoryDto.class),HttpStatus.CREATED);
     }
-
 
     @PutMapping("categories/{id}")
     public ResponseEntity<ResponseCategoryDto> update(@PathVariable Long id, @Valid @RequestBody CreateCategoryDto createCategoryDto) {
-        createCategoryDto.setIdCategory(id);
-        Category category =  categoryService.update(id,mapperUtil.map(createCategoryDto, Category.class));
-        return new ResponseEntity<>(mapperUtil.map(category,ResponseCategoryDto.class),HttpStatus.ACCEPTED);
+        CreateCategoryDto categoryDto =  categoryService.update(id,createCategoryDto);
+        return new ResponseEntity<>(mapperUtil.map(categoryDto,ResponseCategoryDto.class),HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("categories/{id}")

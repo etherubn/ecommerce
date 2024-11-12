@@ -15,7 +15,6 @@ public class CreateOrderedProductDto {
 
     private Long idOrderedProduct;
 
-    @Digits(integer = 5,fraction = 0,message = "Debe ser número")
     @NotNull(message = "Debe tener una cantidad")
     @PositiveOrZero(message = "La cantidad debe ser positiva")
     private Integer quantity;

@@ -7,7 +7,7 @@ import com.comercio.demo.entity.Country;
 
 import java.util.List;
 
-public interface ICountryService extends ICrudService<Country,Long>  {
+public interface ICountryService extends ICrudService<Country,Long,CreateCountryDto>  {
 
 
 }
